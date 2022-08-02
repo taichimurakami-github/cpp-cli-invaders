@@ -14,14 +14,19 @@ constexpr int INVADER_COLUMN = 11;
 constexpr int INVADER_ROW = 5;
 int screen_canvas[SCREEN_HEIGHT][SCREEN_WIDTH];
 
-constexpr int FPS = 4;
-constexpr int REFRESH_INTERVAL = 1000 / FPS;
+//set fps
+constexpr int FPS = 60;
+constexpr int INVADER_REFRESH_FPS = 2;
+constexpr int INVADER_BULLET_REFRESH_FPS = 2;
+
 
 enum
 {
 	TILE_NONE,
 	TILE_INVADER,
 	TILE_PLAYER,
+	TILE_PLAYER_BULLET,
+	TILE_INVADER_BULLET,
 	TILE_MAX
 };
 
@@ -37,14 +42,18 @@ typedef struct {
 }VEC2;
 
 const char* tileAA[TILE_MAX] = {
-	"　", //TILE_NONE
-	"☆", //TILE_INVADER,
-	"▲" //TILE_PLAYER
+	"　",//TILE_NONE
+	"☆",//TILE_INVADER,
+	"▲",//TILE_PLAYER
+	"↑",//TILE_PLAYYER_BULLET
+	"○", //TILE_INVADER_BULLET
 };
 
 typedef struct {
 	int x, y;
+	bool isDead;
 } INVADER;
+
 
 VEC2 directions[] = {//インベーダーの動くベクトル
 	{1,0},//DIR_RIGHT
@@ -54,11 +63,25 @@ VEC2 directions[] = {//インベーダーの動くベクトル
 int invaderDirection = 0;
 INVADER invaders[INVADER_ROW][INVADER_COLUMN];
 
+typedef struct {
+	int x, y;
+	bool isFired;
+}INVADERBULLET;
+INVADERBULLET invaderBullet[INVADER_COLUMN];//各列に一つとする
+
 
 typedef struct {
 	int x, y;
 } PLAYER;
+
 PLAYER player;
+
+typedef struct {
+	int x, y;
+	bool isFired;
+}PLAYERBULLET;
+
+PLAYERBULLET playerBullet;
 
 void DrawScreen() {
 	//コンソールのバッファ削除
@@ -67,12 +90,28 @@ void DrawScreen() {
 	//インベーダー描画
 	for (int y = 0; y < INVADER_ROW; y++)
 		for (int x = 0; x < INVADER_COLUMN; x++) {
+			//死んでいたら描画しない
+			if (invaders[y][x].isDead) continue;
+
 			INVADER _temp = invaders[y][x];
 			screen_canvas[_temp.y][_temp.x] = TILE_INVADER;
 		}
 
+	//インベーダーの弾描画
+	for (int x = 0; x < INVADER_COLUMN; x++) {
+		if (invaderBullet[x].isFired) {
+			INVADERBULLET _temp = invaderBullet[x];
+			screen_canvas[_temp.y][_temp.x] = TILE_INVADER_BULLET;
+		}
+	}
+
 	//プレーヤー描画
 	screen_canvas[player.y][player.x] = TILE_PLAYER;
+
+	//プレーヤーの弾発射
+	if (playerBullet.isFired) {
+		screen_canvas[playerBullet.y][playerBullet.x] = TILE_PLAYER_BULLET;
+	}
 
 	//コンソールのリフレッシュ
 	system("cls");
@@ -89,15 +128,27 @@ void DrawScreen() {
 }
 
 void Init() {
+	//インベーダー初期化
 	for (int y = 0; y < INVADER_ROW; y++)
 		for (int x = 0; x < INVADER_COLUMN; x++) {
 			invaders[y][x].x = x * 2;
 			invaders[y][x].y = y * 2;
+			invaders[y][x].isDead = false;
 		}
 
-	DrawScreen();
+	//インベーダーの弾初期化
+	for (int x = 0; x < INVADER_COLUMN; x++) {
+		invaderBullet[x].isFired = false;
+	}
+
+	//プレーヤーの位置初期化
 	player.x = SCREEN_WIDTH / 2;
 	player.y = SCREEN_HEIGHT - 2;
+
+	//プレーヤーの弾初期化
+	playerBullet.isFired = false;
+
+	DrawScreen();
 }
 
 
@@ -141,7 +192,78 @@ void MoveInvaders() {
 
 	invaderDirection = nextDirection;
 }
+//インベーダーの弾発射処理
+void ShootInvaderBullets() {
 
+	for (int x = 0; x < INVADER_COLUMN; x++) {
+		//弾の発射確率を操作
+		if ((rand() % 100)) {
+			continue;
+		}
+
+		if (!invaderBullet[x].isFired) {
+			//invaderBullet[x].isFired = true;
+
+			//その列の生きているinvaderの中で一番下の行にいるInvaderを求める
+			int invaderRow = -1;
+			for (int y = 0; y < INVADER_ROW; y++) {
+				if (!invaders[y][x].isDead) {
+					invaderRow = y;
+				}
+			}
+
+			//生きているインベーダーがその列にいた場合
+			if (invaderRow >= 0) {
+				invaderBullet[x].isFired = true;
+				invaderBullet[x].x = invaders[invaderRow][x].x;
+				invaderBullet[x].y = invaders[invaderRow][x].y + 1;
+			}
+		}
+	}
+
+	for (int x = 0; x < INVADER_COLUMN; x++) {
+		if (invaderBullet[x].isFired) {
+			invaderBullet[x].y++;
+			if (invaderBullet[x].y >= SCREEN_HEIGHT) {
+				invaderBullet[x].isFired = false;
+			}
+		}
+	}
+}
+
+//playerBulletとInvaderの当たり判定
+bool playerBulletIntersectInvaders() {
+	for (int y = 0; y < INVADER_ROW; y++)
+		for (int x = 0; x < INVADER_COLUMN; x++) {
+			//インベーダーの亡霊に弾が当たってもすり抜けるようにする
+			if (invaders[y][x].isDead) continue;
+
+			bool isXaxisEqual = (invaders[y][x].x == playerBullet.x);
+			bool isYaxisEqual = (invaders[y][x].y == playerBullet.y);
+			if (isXaxisEqual && isYaxisEqual) {
+				playerBullet.isFired = false;
+				invaders[y][x].isDead = true;
+				return true;
+			}
+		}
+	return false;
+}
+
+bool invaderBulletIntersectPlayer() {
+	for (int x = 0; x < INVADER_COLUMN; x++) {
+		if (!invaderBullet[x].isFired) continue;
+
+		bool isXaxisEqual = (invaderBullet[x].x == player.x);
+		bool isYaxisEqual = (invaderBullet[x].y == player.y);
+
+		//プレーヤーと衝突しました
+		if (isXaxisEqual && isYaxisEqual) {
+			return true;//ゲームオーバー！！！
+		}
+	}
+
+	return false;
+}
 
 int main()
 {
@@ -149,16 +271,78 @@ int main()
 
 	bool isContinue = true;
 
+	//calc interval from fps
+	constexpr int refresh_interval = 1000 / FPS;
+	constexpr int invader_refresh_interval = 1000 / INVADER_REFRESH_FPS;
+	constexpr int invader_bullet_refresh_interval = 1000 / INVADER_BULLET_REFRESH_FPS;
+
 	Init();
 	//int a = _getch(screen_canvas);
 	clock_t lastClock = clock();
+	clock_t lastClockForInvaderInterval = lastClock;
+	clock_t lastClockForInvaderBulletInterval = lastClock;
 	while (isContinue) {
 		clock_t nowClock = clock();
 
-		if (nowClock - lastClock >= REFRESH_INTERVAL) {
+		clock_t clockDiff = nowClock - lastClock;
+		clock_t clockDiffForInvaderInterval = nowClock - lastClockForInvaderInterval;
+		clock_t clockDiffForInvaderBulletinterval = nowClock - lastClockForInvaderBulletInterval;
+		if (clockDiff >= refresh_interval) {
 			lastClock = nowClock;
-			MoveInvaders();
+
+			if (_kbhit()) {
+				switch (_getch()) {
+				case 'a': player.x--; break;
+				case 'd': player.x++; break;
+				default:
+					if (!playerBullet.isFired) {
+						playerBullet.isFired = true;
+						playerBullet.x = player.x;
+						playerBullet.y = player.y - 1;
+					}
+					break;
+				}
+
+				if (player.x < 0) player.x = 0;
+				if (player.x >= SCREEN_WIDTH) player.x = SCREEN_WIDTH - 1;
+				if (invaderBulletIntersectPlayer()) {
+					Init();
+					continue;
+				}
+			}
+
+			//プレーヤーの弾を移動させる
+			if (playerBullet.isFired) {
+				playerBullet.y--;
+				if (playerBullet.y < 0) {
+					playerBullet.isFired = false;
+				}
+
+				playerBulletIntersectInvaders();
+			}
+
+			//インベーダー移動処理
+			if (clockDiffForInvaderInterval >= invader_refresh_interval) {
+				lastClockForInvaderInterval = nowClock;
+				MoveInvaders();
+			}
+
+
+			//インベーダーの弾の発射処理
+			if (clockDiffForInvaderBulletinterval >= invader_bullet_refresh_interval) {
+				lastClockForInvaderBulletInterval = nowClock;
+				ShootInvaderBullets();
+			}
+
+			//canvas更新
 			DrawScreen();
+
+			//インベーダーの弾が当たったらゲームオーバー！！
+			if (invaderBulletIntersectPlayer()) {
+				Init();
+				lastClock = clock();
+			}
+
 		}
 	}
 	return 0;
