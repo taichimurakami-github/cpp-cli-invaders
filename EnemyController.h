@@ -42,6 +42,12 @@ public:
 		isEnemyOnTheBottom = false;
 	}
 
+	void Init(Field* field) {
+		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
+			_enemies_state[i]->Init(field);
+		}
+	}
+
 	bool GetIsEnemyOnTheBottom() {
 		return isEnemyOnTheBottom;
 	}
@@ -71,6 +77,7 @@ public:
 	}
 
 	//生きているインベーダーを全員動かす
+	//描画処理用のバッファ書き込みも担当
 	void MoveAllEnemies(Field* field) {
 		int field_width = field->GetFieldWidth();
 		int field_height = field->GetFieldHeight();
@@ -88,6 +95,8 @@ public:
 			switch (_next_dir) {
 			case Enemy::MoveDir::RIGHT: {
 				enemy->MoveRight(field);//右に移動
+
+				//右に動けなかったら下に動く
 				if (enemy->GetX() == field_width - 1) {
 					new_next_dir = Enemy::MoveDir::DOWN;
 				}
@@ -97,11 +106,13 @@ public:
 				enemy->MoveDown(field);//下に移動
 				//bool isMovableToRight = enemy->IsMovable(Enemy::MoveDir::RIGHT, field_width, field_height);
 
+				//インベーダーが底辺にたどり着いたらゲームオーバー
 				if (enemy->GetY() == field_height - 1) {
 					isEnemyOnTheBottom = true;
 					return;
 				}
 
+				//次に左右どちらに動くか決定
 				if (enemy->GetX() == field_width - 1) {
 					new_next_dir = Enemy::MoveDir::LEFT;
 				}
@@ -114,6 +125,7 @@ public:
 			case Enemy::MoveDir::LEFT: {
 				enemy->MoveLeft(field);//左に移動
 
+				//左に動けなかったら下に動く
 				if (enemy->GetX() == 0) {
 					new_next_dir = Enemy::MoveDir::DOWN;
 				}

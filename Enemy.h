@@ -20,6 +20,10 @@ public:
 		STOP
 	};
 
+	void Init(Field* field) {
+		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+	}
+
 	void MoveRight(Field* field) {
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x + 1);

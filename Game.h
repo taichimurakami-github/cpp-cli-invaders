@@ -9,6 +9,7 @@
 
 #include "Field.h"
 #include "EnemyController.h"
+#include "Player.h"
 //#include "Enemy.h"
 //#include "PoolAllocator.h"
 
@@ -24,6 +25,10 @@ public:
 
 		//敵データの生成と初期化
 		C_EnemyController = new EnemyController();
+
+		//プレーヤーの生成と初期化
+		C_Player = new Player(C_Field->GetFieldHeight() - 1, C_Field->GetFieldWidth() / 2);
+
 	}
 	~Game() {}
 
@@ -39,7 +44,10 @@ public:
 	}
 
 	void PlayGame() {
-		std::cout << "press any key to break" << std::endl;
+
+		C_EnemyController->Init(C_Field);
+		C_Player->Init(C_Field);
+
 		clock_t lastClock = clock();
 		clock_t lastClockForInvaderInterval = lastClock;
 		clock_t lastClockForInvaderBulletInterval = lastClock;
@@ -57,7 +65,19 @@ public:
 				lastClock = nowClock;
 
 				if (_kbhit()) {
-					SetGState(GState::GAMEOVER);
+
+
+					switch (_getch()) {
+					case 'a': {
+						C_Player->MoveLeft(C_Field);
+						break;
+					}
+					case 'd': {
+						C_Player->MoveRight(C_Field);
+						break;
+					}
+					}
+
 				}
 
 				//プレーヤーの弾を移動させる
@@ -97,4 +117,5 @@ private:
 
 	Field* C_Field;
 	EnemyController* C_EnemyController;
+	Player* C_Player;
 };
