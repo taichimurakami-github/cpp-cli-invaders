@@ -91,7 +91,7 @@ public:
 
 private:
 	static const int _FIELD_WIDTH = 32;
-	static const int _FIELD_HEIGHT = 20;
+	static const int _FIELD_HEIGHT = 25;
 	FValue _field_state[_FIELD_HEIGHT][_FIELD_WIDTH];//tile‚Ì’l‚ª“ü‚é
 
 	std::string _TILE[FValue::MAX] = {//ŠeID‚ÌŽ¯•Ê‚ÉŽg‚¦‚é

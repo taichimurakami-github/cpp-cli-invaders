@@ -10,6 +10,7 @@
 #include "Field.h"
 #include "EnemyController.h"
 #include "Player.h"
+#include "EnemyBulletController.h"
 //#include "Enemy.h"
 //#include "PoolAllocator.h"
 
@@ -29,6 +30,8 @@ public:
 		//プレーヤーの生成と初期化
 		C_Player = new Player(C_Field->GetFieldHeight() - 1, C_Field->GetFieldWidth() / 2);
 
+		//敵の弾データの生成と初期化
+		C_EnemyBulletController = new EnemyBulletController(C_Field, C_EnemyController);
 	}
 	~Game() {}
 
@@ -76,16 +79,18 @@ public:
 						C_Player->MoveRight(C_Field);
 						break;
 					}
+					default: {
+						C_Player->Shoot();
+						break;
+					}
 					}
 
 				}
 
-				//プレーヤーの弾を移動させる
-
 				//インベーダー移動処理
 				if (clockDiffForInvaderInterval >= 1000 / 2) {
 					lastClockForInvaderInterval = nowClock;
-					C_EnemyController->MoveAllEnemies(C_Field);
+					C_EnemyController->Update(C_Field);
 					if (C_EnemyController->GetIsEnemyOnTheBottom()) {
 						//インベーダーが下に到達していたらゲームオーバー
 						SetGState(GState::GAMEOVER);
@@ -93,15 +98,25 @@ public:
 					}
 				}
 
-
-
 				//インベーダーの弾の発射処理
+				if (lastClockForInvaderBulletInterval >= 1000 / 5) {
+					lastClockForInvaderBulletInterval = nowClock;
+					C_EnemyBulletController->Update();
+
+					if (C_EnemyBulletController->GetIsHit()) {
+						//弾がプレーヤーに当たったらゲームオーバー
+						SetGState(GState::GAMEOVER);
+						break;
+					}
+				}
+
+				//プレーヤーの弾を移動させる&当たり判定
+				C_Player->Update(C_Field, C_EnemyController);
 
 
 				//canvas更新
 				//C_EnemyController->SetEnemiesIntoField(C_Field);
 				C_Field->Draw();
-
 
 				//インベーダーの弾が当たったらゲームオーバー！！
 
@@ -118,4 +133,5 @@ private:
 	Field* C_Field;
 	EnemyController* C_EnemyController;
 	Player* C_Player;
+	EnemyBulletController* C_EnemyBulletController;
 };

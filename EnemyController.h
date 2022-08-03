@@ -17,19 +17,7 @@ class EnemyController
 {
 public:
 	EnemyController() {
-		////PoolAllocator < Enemy, _NUM_OF_ENEMIES > palloc;
-
-
-		//struct POINT {
-		//	int x;
-		//	int  y;
-		//};
-		//const int TEST_SIZE = 100;
-		//PoolAllocator<POINT, TEST_SIZE> a;
-		//POINT* ptr[TEST_SIZE];
-		//for (int i = 0; i < TEST_SIZE; i++) {
-		//	ptr[i] = a.Alloc();
-		//}
+		//TODO: PoolAllocatorを使った生成に変更
 		for (int row = 0; row < _ENEMIES_ROW; row++) {
 			for (int col = 0; col < _ENEMIES_COL; col++) {
 				_enemies_state[_getIndexFromPosition(col, row)] = new Enemy(col * 2, row * 2);
@@ -50,6 +38,35 @@ public:
 
 	bool GetIsEnemyOnTheBottom() {
 		return isEnemyOnTheBottom;
+	}
+
+	int GetEnemiesRow() {
+		return _ENEMIES_ROW;
+	}
+
+	int GetEnemiesCol() {
+		return _ENEMIES_COL;
+	}
+
+	Enemy* GetEnemyFromPosition(int x, int y) {
+
+		int i_enemy = _getIndexFromPosition(x, y);
+
+		return _enemies_state[i_enemy];
+	}
+
+	//指定された列colの中で、最も底辺に近いenemyを返す
+	Enemy* GetEnemyBottomOfCol(int col) {
+
+		for (int y = _ENEMIES_ROW - 1; y >= 0; y--) {
+			Enemy* enemy = _enemies_state[_getIndexFromPosition(col, y)];
+
+			if (enemy->GetIsDead() == false) {
+				return enemy;
+			}
+		}
+
+		return nullptr;
 	}
 
 	void SetEnemiesIntoField(Field* field) {
@@ -78,7 +95,7 @@ public:
 
 	//生きているインベーダーを全員動かす
 	//描画処理用のバッファ書き込みも担当
-	void MoveAllEnemies(Field* field) {
+	void Update(Field* field) {
 		int field_width = field->GetFieldWidth();
 		int field_height = field->GetFieldHeight();
 		Enemy::MoveDir new_next_dir = _next_dir;
@@ -137,23 +154,6 @@ public:
 
 		//次動く方向を更新
 		_next_dir = new_next_dir;
-	}
-
-	void UpdateMoveDir() {
-		switch (_next_dir) {
-		case Enemy::MoveDir::RIGHT: {
-			//右端に接しているインベーダーあり
-			break;
-		}
-		case Enemy::MoveDir::DOWN: {
-			break;
-		}
-
-		case Enemy::MoveDir::LEFT: {
-			break;
-		}
-		}
-
 	}
 
 

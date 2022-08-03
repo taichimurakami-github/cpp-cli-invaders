@@ -24,6 +24,11 @@ public:
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
 
+	void Dead(Field* field) {
+		SetIsDead(true);
+		field->SetFieldState(_x, _y, Field::FValue::NONE);
+	}
+
 	void MoveRight(Field* field) {
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x + 1);
@@ -63,6 +68,10 @@ public:
 
 	bool GetIsDead() {
 		return _is_dead;
+	}
+
+	void SetIsDead(bool _state) {
+		_is_dead = _state;
 	}
 
 private:
