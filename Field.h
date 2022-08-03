@@ -7,7 +7,6 @@
 #include <string.h>
 
 //Include base class 
-#include "./OnFieldObjBase.h"
 
 class Field
 {
@@ -44,6 +43,7 @@ public:
 		//コンソールのバッファ削除
 		//memset(_field_state, 0, sizeof _field_state);
 
+
 		//コンソールのリフレッシュ
 		system("cls");
 
@@ -57,14 +57,9 @@ public:
 
 	}
 
-	FValue GetFieldValue(int x, int y) {
-		return _field_state[y][x];
-	}
-
-	void SetFieldState(int x, int y, FValue new_field_value) {
-		_field_state[y][x] = new_field_value;
-	}
-
+	//initialize _field_state
+	//** call before update fieldstate proc **
+	//使わないので消すかも
 	void ResetFieldState() {
 		for (int y = 0; y < _FIELD_HEIGHT; y++) {
 			for (int x = 0; x < _FIELD_WIDTH; x++) {
@@ -73,6 +68,26 @@ public:
 		}
 	}
 
+
+	//GET FIELD_WIDTH
+	int GetFieldWidth() {
+		return _FIELD_WIDTH;
+	}
+
+	//GET FIELD_HEIGHT
+	int GetFieldHeight() {
+		return _FIELD_HEIGHT;
+	}
+
+	//GET SPECIFIC FIELD VALUE
+	FValue GetFieldValue(int x, int y) {
+		return _field_state[y][x];
+	}
+
+	//SET SPECIFIC FIELD_VALUE
+	void SetFieldState(int x, int y, FValue new_field_value) {
+		_field_state[y][x] = new_field_value;
+	}
 
 private:
 	static const int _FIELD_WIDTH = 32;

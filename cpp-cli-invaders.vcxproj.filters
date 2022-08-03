@@ -62,7 +62,7 @@
     <ClInclude Include="HeaderMenu.h">
       <Filter>ヘッダー ファイル\States</Filter>
     </ClInclude>
-    <ClInclude Include="OnFieldObjBase.h">
+    <ClInclude Include="FieldObjBase.h">
       <Filter>ヘッダー ファイル\States</Filter>
     </ClInclude>
     <ClInclude Include="PoolAllocator.h">

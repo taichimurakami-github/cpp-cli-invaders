@@ -34,36 +34,52 @@ public:
 		MAX
 	};
 
-	void SetState(GState s) {
+	void SetGState(GState s) {
 		_game_state = s;
 	}
 
 	void PlayGame() {
 		std::cout << "press any key to break" << std::endl;
 		clock_t lastClock = clock();
+		clock_t lastClockForInvaderInterval = lastClock;
+		clock_t lastClockForInvaderBulletInterval = lastClock;
 
-		while (1) {
+		int update_interval = 1000 / _game_fps;
+
+		while (_game_state == GState::PLAYING) {
 			clock_t nowClock = clock();
 
 			clock_t clockDiff = nowClock - lastClock;
-			if (clockDiff >= 1000 / _FPS) {
+			clock_t clockDiffForInvaderInterval = nowClock - lastClockForInvaderInterval;
+			clock_t clockDiffForInvaderBulletinterval = nowClock - lastClockForInvaderBulletInterval;
+
+			if (clockDiff >= update_interval) {
 				lastClock = nowClock;
 
-				C_Field->ResetFieldState();
-
 				if (_kbhit()) {
-					SetState(GState::GAMEOVER);
+					SetGState(GState::GAMEOVER);
 				}
 
 				//プレーヤーの弾を移動させる
 
 				//インベーダー移動処理
+				if (clockDiffForInvaderInterval >= 1000 / 2) {
+					lastClockForInvaderInterval = nowClock;
+					C_EnemyController->MoveAllEnemies(C_Field);
+					if (C_EnemyController->GetIsEnemyOnTheBottom()) {
+						//インベーダーが下に到達していたらゲームオーバー
+						SetGState(GState::GAMEOVER);
+						break;
+					}
+				}
+
 
 
 				//インベーダーの弾の発射処理
 
+
 				//canvas更新
-				C_EnemyController->SetEnemyIntoField(C_Field);
+				//C_EnemyController->SetEnemiesIntoField(C_Field);
 				C_Field->Draw();
 
 
@@ -75,7 +91,8 @@ public:
 
 
 private:
-	static const int _FPS = 5;
+	static const int _game_fps = 60;
+
 	GState _game_state;
 
 	Field* C_Field;

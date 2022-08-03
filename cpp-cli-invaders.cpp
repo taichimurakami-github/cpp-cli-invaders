@@ -10,7 +10,7 @@ int main() {
 
 	Game* game = new Game();
 
-	game->SetState(Game::GState::PLAYING);
+	game->SetGState(Game::GState::PLAYING);
 	game->PlayGame();
 
 	//Init();
