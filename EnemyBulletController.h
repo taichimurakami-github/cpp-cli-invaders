@@ -42,7 +42,7 @@ public:
 	//Šm—¦‚ÅV‚µ‚¢‹…‚ð¶¬
 	void ShootNewBulletsRandomly(int x) {
 
-		bool flg = (rand() % 1000) > 990;
+		bool flg = (rand() % 1000) > 980;
 
 		if (flg) {
 			int y = C_EnemyController->GetEnemiesRow() - 1;

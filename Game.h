@@ -44,9 +44,18 @@ public:
 
 	void SetGState(GState s) {
 		_game_state = s;
+
+		switch (s) {
+		case GState::PLAYING: {
+			PlayGame();
+			break;
+		}
+		}
 	}
 
 	void PlayGame() {
+
+		int max_hit_count = C_EnemyController->GetNumOfEnemies();
 
 		C_EnemyController->Init(C_Field);
 		C_Player->Init(C_Field);
@@ -57,7 +66,7 @@ public:
 
 		int update_interval = 1000 / _game_fps;
 
-		while (_game_state == GState::PLAYING) {
+		while (1) {
 			clock_t nowClock = clock();
 
 			clock_t clockDiff = nowClock - lastClock;
@@ -86,6 +95,8 @@ public:
 					}
 
 				}
+				//プレーヤーの弾を移動させる&当たり判定
+				C_Player->Update(C_Field, C_EnemyController);
 
 				//インベーダー移動処理
 				if (clockDiffForInvaderInterval >= 1000 / 2) {
@@ -104,22 +115,20 @@ public:
 					C_EnemyBulletController->Update();
 
 					if (C_EnemyBulletController->GetIsHit()) {
-						//弾がプレーヤーに当たったらゲームオーバー
+						//インベーダーの弾がプレーヤーに当たったらゲームオーバー
 						SetGState(GState::GAMEOVER);
 						break;
 					}
 				}
 
-				//プレーヤーの弾を移動させる&当たり判定
-				C_Player->Update(C_Field, C_EnemyController);
-
-
 				//canvas更新
 				//C_EnemyController->SetEnemiesIntoField(C_Field);
 				C_Field->Draw();
 
-				//インベーダーの弾が当たったらゲームオーバー！！
-
+				if (C_Player->GetHitCount() >= max_hit_count) {
+					SetGState(GState::GAMEOVER);
+					break;
+				}
 			}
 		}
 	}

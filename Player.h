@@ -10,6 +10,7 @@ class Player : public FieldObjBase
 public:
 	Player(int x, int y) : FieldObjBase(x, y) {
 		C_PlayerBullet = new PlayerBullet(x, y);
+		_hit_count = 0;
 	}
 
 	void Init(Field* field) {
@@ -18,8 +19,15 @@ public:
 
 	//playerbulletのアップデート
 	void Update(Field* field, EnemyController* enemy_controller) {
-		if (C_PlayerBullet->GetIsFired()) {
-			C_PlayerBullet->MoveUp(field, enemy_controller);
+		//発射されていなければなにもしない
+		if (C_PlayerBullet->GetIsFired() == false) {
+			return;
+		}
+
+		bool is_hit = C_PlayerBullet->MoveUp(field, enemy_controller);
+
+		if (is_hit) {
+			_hit_count += 1;
 		}
 	}
 
@@ -57,7 +65,12 @@ public:
 		C_PlayerBullet->Init(_x, _y - 1);
 	}
 
+	int GetHitCount() {
+		return _hit_count;
+	}
+
 private:
 	PlayerBullet* C_PlayerBullet;
+	int _hit_count;
 };
 

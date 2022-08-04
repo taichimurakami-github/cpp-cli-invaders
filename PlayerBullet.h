@@ -25,31 +25,27 @@ public:
 		_is_fired = false;
 	}
 
-	void MoveUp(Field* field, EnemyController* enemy_controller) {
+	bool MoveUp(Field* field, EnemyController* enemy_controller) {
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 
 		if (_y - 1 <= 0) {
 			//既に下端に到達していた場合：弾を消去
 			Destroy();
-			return;
+			return false;
 		}
 
 		//当たり判定：敵と重なったら敵を消去して自身も消去
 		if (field->GetFieldValue(_x, _y - 1) == Field::FValue::ENEMY) {
 
 			Enemy* enemy = enemy_controller->GetEnemyFromFieldPosition(_x, _y - 1);
-			if (enemy == nullptr) {
-				//エラー
-				throw;
-			}
-
 			enemy->Dead(field);
 			Destroy();
-			return;
+			return true;
 		}
 
-		//下端に到達していない場合：弾を上に移動
+		//上端に到達していない場合：弾を上に移動
 		field->SetFieldState(_x, --_y, Field::FValue::PLAYER_BULLET);
+		return false;
 	}
 
 	bool GetIsFired() {

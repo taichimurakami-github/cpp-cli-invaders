@@ -38,62 +38,6 @@ public:
 		}
 	}
 
-	bool GetIsEnemyOnTheBottom() {
-		return isEnemyOnTheBottom;
-	}
-
-	int GetEnemiesRow() {
-		return _ENEMIES_ROW;
-	}
-
-	int GetEnemiesCol() {
-		return _ENEMIES_COL;
-	}
-
-	Enemy* GetEnemyFromFieldPosition(int x, int y) {
-
-		int enemy_id = _GetEnemyIdFromFieldPosition(x, y);
-		return _enemies_state[enemy_id];
-	}
-
-	//指定された列colの中で、最も底辺に近いenemyを返す
-	Enemy* GetEnemyBottomOfCol(int col) {
-
-		for (int y = _ENEMIES_ROW - 1; y >= 0; y--) {
-			Enemy* enemy = _enemies_state[col + _ENEMIES_COL * y];
-
-			if (enemy->GetIsDead() == false) {
-				return enemy;
-			}
-		}
-
-		return nullptr;
-	}
-
-	void SetEnemiesIntoField(Field* field) {
-		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
-			Enemy* enemy = _enemies_state[i];
-
-			if (enemy->GetIsDead()) {
-				//死んでいるインベーダーについての処理
-				field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::NONE);
-				continue;
-			}
-
-			//生きているインベーダーについての処理
-
-			field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
-		}
-	}
-
-	void SetEnemyIntoField(Field* field, Enemy* enemy) {
-		field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
-	}
-
-	void SetEnemiesMoveDir(Enemy::MoveDir next_move_dir) {
-		_next_dir = next_move_dir;
-	}
-
 	//生きているインベーダーを全員動かす
 	//描画処理用のバッファ書き込みも担当
 	void Update(Field* field) {
@@ -153,6 +97,65 @@ public:
 		_next_dir = new_next_dir;
 	}
 
+	bool GetIsEnemyOnTheBottom() {
+		return isEnemyOnTheBottom;
+	}
+
+	int GetEnemiesRow() {
+		return _ENEMIES_ROW;
+	}
+
+	int GetEnemiesCol() {
+		return _ENEMIES_COL;
+	}
+
+	int GetNumOfEnemies() {
+		return _NUM_OF_ENEMIES;
+	}
+
+	Enemy* GetEnemyFromFieldPosition(int x, int y) {
+
+		int enemy_id = _GetEnemyIdFromFieldPosition(x, y);
+		return _enemies_state[enemy_id];
+	}
+
+	//指定された列colの中で、最も底辺に近いenemyを返す
+	Enemy* GetEnemyBottomOfCol(int col) {
+
+		for (int y = _ENEMIES_ROW - 1; y >= 0; y--) {
+			Enemy* enemy = _enemies_state[col + _ENEMIES_COL * y];
+
+			if (enemy->GetIsDead() == false) {
+				return enemy;
+			}
+		}
+
+		return nullptr;
+	}
+
+	void SetEnemiesIntoField(Field* field) {
+		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
+			Enemy* enemy = _enemies_state[i];
+
+			if (enemy->GetIsDead()) {
+				//死んでいるインベーダーについての処理
+				field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::NONE);
+				continue;
+			}
+
+			//生きているインベーダーについての処理
+
+			field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
+		}
+	}
+
+	void SetEnemyIntoField(Field* field, Enemy* enemy) {
+		field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
+	}
+
+	void SetEnemiesMoveDir(Enemy::MoveDir next_move_dir) {
+		_next_dir = next_move_dir;
+	}
 
 private:
 	static const int _ENEMIES_ROW = 4;
