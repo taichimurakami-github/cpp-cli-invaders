@@ -38,7 +38,7 @@ public:
 		}
 
 		//‰º’[‚É“ž’B‚µ‚Ä‚¢‚È‚¢ê‡F’e‚ð‰º‚ÉˆÚ“®
-		field->SetFieldState(_x, ++_y, Field::FValue::PLAYER_BULLET);
+		field->SetFieldState(_x, ++_y, Field::FValue::ENEMY_BULLET);
 	}
 
 	bool GetIsFired() {

@@ -154,7 +154,7 @@ public:
 
 
 private:
-	static const int _ENEMIES_ROW = 5;
+	static const int _ENEMIES_ROW = 4;
 	static const int _ENEMIES_COL = 11;
 	static const int _NUM_OF_ENEMIES = _ENEMIES_ROW * _ENEMIES_COL;
 	Enemy* _enemies_state[_NUM_OF_ENEMIES];

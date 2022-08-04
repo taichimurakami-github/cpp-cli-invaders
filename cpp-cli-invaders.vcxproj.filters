@@ -68,9 +68,6 @@
     <ClInclude Include="Field.h">
       <Filter>ヘッダー ファイル\States</Filter>
     </ClInclude>
-    <ClInclude Include="HeaderMenu.h">
-      <Filter>ヘッダー ファイル\States</Filter>
-    </ClInclude>
     <ClInclude Include="FieldObjBase.h">
       <Filter>ヘッダー ファイル\States</Filter>
     </ClInclude>
@@ -93,6 +90,9 @@
       <Filter>ヘッダー ファイル\Containers</Filter>
     </ClInclude>
     <ClInclude Include="PlayerBullet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderMenu.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
