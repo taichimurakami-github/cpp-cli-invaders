@@ -30,7 +30,7 @@ public:
 			return;
 		}
 
-		if (field->GetFieldValue(_x, _y + 1) == Field::FValue::PLAYER) {
+		if (_IntersectPlayer(field->GetFieldValue(_x, _y + 1))) {
 			//当たり判定：プレーヤーと重なったらフラグを立てて処理を終了
 			_is_hit = true;
 			Destroy();
@@ -52,4 +52,10 @@ public:
 private:
 	bool _is_fired;
 	bool _is_hit;
+
+	bool _IntersectPlayer(Field::FValue fvalue) {
+		//移動先がPlayerだったらゲームオーバー
+		//敵弾は属性関係なく１種類で、当たったらPlayerはOUT	
+		return ((fvalue == Field::FValue::PLAYER_P) || (fvalue == Field::FValue::PLAYER_M));
+	}
 };

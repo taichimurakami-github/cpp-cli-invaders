@@ -51,8 +51,8 @@ public:
 		}
 
 		//敵弾にあたりに行ったとき
-		//TODO：実装
-		if (field->GetFieldValue(_x + 1, _y) == Field::FValue::ENEMY_BULLET) {
+
+		if (_IntersectEnemyBullet(field->GetFieldValue(_x + 1, _y))) {
 			//ゲームオーバー
 			return true;
 		}
@@ -71,8 +71,8 @@ public:
 			return false;
 		}
 
-		//TODO：実装
-		if (field->GetFieldValue(_x - 1, _y) == Field::FValue::ENEMY_BULLET) {
+		//敵弾にあたりに行ったとき
+		if (_IntersectEnemyBullet(field->GetFieldValue(_x - 1, _y))) {
 			//ゲームオーバー
 			return true;
 		}
@@ -123,6 +123,13 @@ private:
 
 	Field::FValue _GetPlayerFValue() {
 		return (_attribute == Attribute::TYPE_M) ? Field::FValue::PLAYER_M : Field::FValue::PLAYER_P;
+	}
+
+	bool _IntersectEnemyBullet(Field::FValue fvalue) {
+		//当たった先が敵の弾だったらゲームオーバー
+		//敵弾は属性関係なく１種類で、当たったらOUT
+		//敵の弾でなければ何も起こらない（？？）
+		return (fvalue == Field::FValue::ENEMY_BULLET);
 	}
 
 };
