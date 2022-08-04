@@ -49,6 +49,11 @@ public:
 	}
 
 	void Shoot() {
+		//Šù‚É”­ŽËÏ‚Ý‚¾‚Á‚½‚çŒ‚‚Ä‚È‚¢
+		if (C_PlayerBullet->GetIsFired()) {
+			return;
+		}
+		//Fire!!
 		C_PlayerBullet->Init(_x, _y - 1);
 	}
 
