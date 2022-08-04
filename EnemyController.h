@@ -167,26 +167,6 @@ public:
 		return nullptr;
 	}
 
-	void SetEnemiesIntoField(Field* field) {
-		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
-			Enemy* enemy = _enemies_state[i];
-
-			if (enemy->GetIsDead()) {
-				//死んでいるインベーダーについての処理
-				field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::NONE);
-				continue;
-			}
-
-			//生きているインベーダーについての処理
-
-			field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
-		}
-	}
-
-	void SetEnemyIntoField(Field* field, Enemy* enemy) {
-		field->SetFieldState(enemy->GetX(), enemy->GetY(), Field::FValue::ENEMY);
-	}
-
 	void SetEnemiesMoveDir(Enemy::MoveDir next_move_dir) {
 		_next_dir = next_move_dir;
 	}

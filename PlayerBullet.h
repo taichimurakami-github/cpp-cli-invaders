@@ -54,13 +54,19 @@ public:
 		if (_IntersectEnemy(fvalue)) {
 			Enemy* enemy = enemy_controller->GetEnemyFromFieldPosition(_x, _y - 1);
 
-			//—LŒø‚È‘®«‘Š«‚ÌUŒ‚‚Ìê‡‚Í”j‰ó‚Å‚«‚é
 			if (_IsValidAttack(enemy->GetAttribute())) {
+				//—LŒø‚È‘®«‘Š«‚ÌUŒ‚‚Ìê‡‚Í”j‰ó‚Å‚«‚é
 				enemy->Dead(field);
+				Destroy();
+				return true;
+			}
+			else {
+				//—LŒø‚È‘®«‘Š«‚ÌUŒ‚‚Å‚Í‚È‚¢ê‡‚Í’e‚ªÁ‚¦‚é‚ª“G‚Í”j‰ó‚Å‚«‚È‚¢
+				Destroy();
+				return false;
 			}
 
-			Destroy();
-			return true;
+
 		}
 
 		//ã’[‚É“’B‚µ‚Ä‚¢‚È‚¢ê‡F’e‚ğã‚ÉˆÚ“®iÄ•`‰æj

@@ -15,9 +15,9 @@ class Field
 public:
 	static enum FValue {
 		NONE,
-		ENEMY,
-		PLAYER,
-		PLAYER_BULLET,
+		//ENEMY,
+		//PLAYER,
+		//PLAYER_BULLET,
 		ENEMY_BULLET,
 
 		PLAYER_P,
@@ -26,8 +26,8 @@ public:
 		ENEMY_M,
 		PLAYER_BULLET_P,
 		PLAYER_BULLET_M,
-		ENEMY_BULLET_P,
-		ENEMY_BULLET_M,
+		//ENEMY_BULLET_P,
+		//ENEMY_BULLET_M,
 		MAX,
 	};
 
@@ -61,7 +61,12 @@ public:
 				FValue fvalue = _field_state[y][x];
 
 				switch (fvalue) {
-				case FValue::ENEMY: {
+				case FValue::ENEMY_P: {
+					std::cout << enemy_colorset << _TILE[fvalue] << CLIOutput::colorset_white;
+					break;
+				}
+
+				case FValue::ENEMY_M: {
 					std::cout << enemy_colorset << _TILE[fvalue] << CLIOutput::colorset_white;
 					break;
 				}
@@ -104,9 +109,9 @@ private:
 
 	std::string _TILE[FValue::MAX] = {//ŠeID‚ÌŽ¯•Ê‚ÉŽg‚¦‚é
 		 "@",//FValue::NONE
-		 "™",//FValue::ENEMY
-		 "£",//FValue::PLAYER
-		 "ª",//FValue::PLAYER_BULLET
+		 //"™",//FValue::ENEMY
+		 //"£",//FValue::PLAYER
+		 //"ª",//FValue::PLAYER_BULLET
 		 "›",//FValue::ENEMY_BULLET
 
 		 //’Ç‰Á
@@ -116,8 +121,8 @@ private:
 		 "™",//FValue::ENEMY_M
 		 "Ÿ",//FValue::PLAYER_BULLET_P
 		 "ž",//FValue::PLAYER_BULLET_M
-		 "œ",//FValue::ENEMY_BULLET_P
-		 "›",//FValue::ENEMY_BULLET_M
+		 //"œ",//FValue::ENEMY_BULLET_P
+		 //"›",//FValue::ENEMY_BULLET_M
 	};
 
 	void _ResetFieldState() {

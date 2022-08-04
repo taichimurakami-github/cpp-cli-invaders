@@ -129,17 +129,6 @@
   <ItemGroup>
     <ClCompile Include="CLIOutput.cpp" />
     <ClCompile Include="cpp-cli-invaders.cpp" />
-    <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyBullet.cpp" />
-    <ClCompile Include="EnemyBulletController.cpp" />
-    <ClCompile Include="EnemyController.cpp" />
-    <ClCompile Include="Field.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="HeaderMenu.cpp" />
-    <ClCompile Include="OnFieldObjBase.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLIOutput.h" />
