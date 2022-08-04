@@ -8,12 +8,18 @@
 class Player : public FieldObjBase
 {
 public:
+	static enum Attribute {//©‹@‚Ì‘®«
+		TYPE_P,
+		TYPE_M
+	};
+
 	Player(int x, int y) : FieldObjBase(x, y) {
 		C_PlayerBullet = new PlayerBullet(x, y);
 
 		_init_x = x;
 		_init_y = y;
 		_hit_count = 0;
+		_attribute = Attribute::TYPE_M;
 	}
 
 	void Init(Field* field) {
@@ -88,10 +94,19 @@ public:
 		return _hit_count;
 	}
 
+	Attribute GetAttribute() {
+		return _attribute;
+	}
+
+	Attribute SetAttribute(Attribute attr) {
+		_attribute = attr;
+	}
+
 private:
 	PlayerBullet* C_PlayerBullet;
 	int _init_x;
 	int _init_y;
 	int _hit_count;
+	Attribute _attribute;
 };
 

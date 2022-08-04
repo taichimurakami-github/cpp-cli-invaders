@@ -19,6 +19,14 @@ public:
 		PLAYER,
 		PLAYER_BULLET,
 		ENEMY_BULLET,
+		PLAYER_P,
+		PLAYER_M,
+		ENEMY_P,
+		ENEMY_M,
+		PLAYER_BULLET_P,
+		PLAYER_BULLET_M,
+		ENEMY_BULLET_P,
+		ENEMY_BULLET_M,
 		MAX,
 	};
 
@@ -99,6 +107,16 @@ private:
 		 "Å£",//FValue::PLAYER
 		 "Å™",//FValue::PLAYER_BULLET
 		 "Åõ",//FValue::ENEMY_BULLET
+
+		 //í«â¡
+		 "Åü",//FValue::PLAYER_P
+		 "Åû",//FValue::PLAYER_M
+		 "Åö",//FValue::ENEMY_P
+		 "Åô",//FValue::ENEMY_M
+		 "Åü",//FValue::PLAYER_BULLET_P
+		 "Åû",//FValue::PLAYER_BULLET_M
+		 "Åú",//FValue::ENEMY_BULLET_P
+		 "Åõ",//FValue::ENEMY_BULLET_M
 	};
 
 	void _ResetFieldState() {

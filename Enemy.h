@@ -7,10 +7,16 @@
 class Enemy : public FieldObjBase
 {
 public:
-	Enemy(int x, int y) : FieldObjBase(x, y) {
+	static enum Attribute {//©‹@‚Ì‘®«
+		TYPE_P,
+		TYPE_M
+	};
+
+	Enemy(int x, int y, Attribute attr = Attribute::TYPE_P) : FieldObjBase(x, y) {
 		_is_dead = false;
 		_x = x;
 		_y = y;
+		_attribute = attr;
 	};
 
 	static enum MoveDir {
@@ -89,11 +95,20 @@ public:
 		return _is_dead;
 	}
 
+	Attribute GetAttribute() {
+		return _attribute;
+	}
+
 	void SetIsDead(bool _state) {
 		_is_dead = _state;
 	}
 
+	Attribute SetAttribute(Attribute attr) {
+		_attribute = attr;
+	}
+
 private:
 	bool _is_dead;
+	Attribute _attribute;
 };
 
