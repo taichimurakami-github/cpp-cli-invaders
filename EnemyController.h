@@ -19,7 +19,6 @@ class EnemyController
 public:
 	EnemyController(int _enemy_level = 0) {
 		//TODO: PoolAllocator‚ğg‚Á‚½¶¬‚É•ÏX
-
 		_AllocateEnemies();
 
 		_next_dir = Enemy::MoveDir::RIGHT;
@@ -211,7 +210,9 @@ private:
 		for (int row = 0; row < _ENEMIES_ROW; row++) {
 			for (int col = 0; col < _ENEMIES_COL; col++) {
 				int id = col + _ENEMIES_COL * row;
-				_enemies_state[id] = new(_palloc.Alloc()) Enemy(2 * col, 2 * row);
+				//“G‚Ì‘®«‚ğ‘ª‚é
+				Enemy::Attribute attr = id % 2 ? Enemy::Attribute::TYPE_M : Enemy::Attribute::TYPE_P;
+				_enemies_state[id] = new(_palloc.Alloc()) Enemy(2 * col, 2 * row, attr);
 			}
 		}
 	}
