@@ -30,18 +30,34 @@ public:
 	}
 
 	void MoveRight(Field* field) {
+		//“|‚³‚ê‚Ä‚¢‚½‚çÀ•W‚¾‚¯“®‚©‚·i•`‰æ‚³‚ê‚È‚¢‚¾‚¯‚ÅŽÀ‘Ì‚ÍÁ‚³‚È‚¢j
+		if (_is_dead) {
+			SetX(_x + 1);
+			return;
+		}
+
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x + 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
 
 	void MoveLeft(Field* field) {
+		if (_is_dead) {
+			SetX(_x - 1);
+			return;
+		}
+
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x - 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
 
 	void MoveDown(Field* field) {
+		if (_is_dead) {
+			SetY(_y + 1);
+			return;
+		}
+
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetY(_y + 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
@@ -65,7 +81,6 @@ public:
 		}
 
 	}
-
 	bool GetIsDead() {
 		return _is_dead;
 	}

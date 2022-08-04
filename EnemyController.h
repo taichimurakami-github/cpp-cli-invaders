@@ -20,7 +20,8 @@ public:
 		//TODO: PoolAllocatorを使った生成に変更
 		for (int row = 0; row < _ENEMIES_ROW; row++) {
 			for (int col = 0; col < _ENEMIES_COL; col++) {
-				_enemies_state[_getIndexFromPosition(col, row)] = new Enemy(col * 2, row * 2);
+				int ptr = col + _ENEMIES_COL * row;
+				_enemies_state[ptr] = new Enemy(col * 2, row * 2);
 			}
 		}
 
@@ -48,18 +49,17 @@ public:
 		return _ENEMIES_COL;
 	}
 
-	Enemy* GetEnemyFromPosition(int x, int y) {
+	Enemy* GetEnemyFromFieldPosition(int x, int y) {
 
-		int i_enemy = _getIndexFromPosition(x, y);
-
-		return _enemies_state[i_enemy];
+		int enemy_id = _GetEnemyIdFromFieldPosition(x, y);
+		return _enemies_state[enemy_id];
 	}
 
 	//指定された列colの中で、最も底辺に近いenemyを返す
 	Enemy* GetEnemyBottomOfCol(int col) {
 
 		for (int y = _ENEMIES_ROW - 1; y >= 0; y--) {
-			Enemy* enemy = _enemies_state[_getIndexFromPosition(col, y)];
+			Enemy* enemy = _enemies_state[col + _ENEMIES_COL * y];
 
 			if (enemy->GetIsDead() == false) {
 				return enemy;
@@ -103,10 +103,6 @@ public:
 
 		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
 			Enemy* enemy = _enemies_state[i];
-
-			if (enemy->GetIsDead()) {
-				continue;
-			}
 
 			//enemyを移動させる
 			switch (_next_dir) {
@@ -166,8 +162,14 @@ private:
 
 	bool isEnemyOnTheBottom; //インベーダーが下端に到達したフラグ
 
-	int _getIndexFromPosition(int x, int y) {
-		return x + _ENEMIES_COL * y;
+	int _GetEnemyIdFromFieldPosition(int x, int y) {
+		//計算の基準にする左上のインベーダー
+		//（倒されても亡霊として動かし続けるので基準として使える）
+		int x_base = _enemies_state[0]->GetX();
+		int y_base = _enemies_state[0]->GetY();
+
+		return (x - x_base) / 2 + _ENEMIES_COL * (y - y_base) / 2;
 	}
+
 };
 

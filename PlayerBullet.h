@@ -37,9 +37,13 @@ public:
 		//当たり判定：敵と重なったら敵を消去して自身も消去
 		if (field->GetFieldValue(_x, _y - 1) == Field::FValue::ENEMY) {
 
-			Enemy* enemy = enemy_controller->GetEnemyFromPosition(_x, _y - 1);
-			enemy->Dead(field);
+			Enemy* enemy = enemy_controller->GetEnemyFromFieldPosition(_x, _y - 1);
+			if (enemy == nullptr) {
+				//エラー
+				throw;
+			}
 
+			enemy->Dead(field);
 			Destroy();
 			return;
 		}
