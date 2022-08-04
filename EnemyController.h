@@ -12,26 +12,35 @@
 #include "PoolAllocator.h"
 #include "Enemy.h"
 #include "Field.h"
+#include "CLIOutput.h"
 
 class EnemyController
 {
 public:
-	EnemyController() {
+	EnemyController(int _enemy_level = 0) {
 		//TODO: PoolAllocatorを使った生成に変更
 
 		_AllocateEnemies();
 
 		_next_dir = Enemy::MoveDir::RIGHT;
 		is_enemy_on_the_bottom = false;
+		SetEnemiesLevel(_enemy_level);
 	}
 
 	void Init(Field* field) {
 		//_enemies_stateをリセット
+		_enemies_level = 0;
 
 		_FreeEnemies();
 
 		_AllocateEnemies();
 	}
+
+	//void Redraw(Field* field) {
+	//	for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
+	//		_enemies_state[i]->DrawSelf(field);
+	//	}
+	//}
 
 	//生きているインベーダーを全員動かす
 	//描画処理用のバッファ書き込みも担当
@@ -39,7 +48,6 @@ public:
 		int field_width = field->GetFieldWidth();
 		int field_height = field->GetFieldHeight();
 		Enemy::MoveDir new_next_dir = _next_dir;
-
 
 		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
 			Enemy* enemy = _enemies_state[i];
@@ -108,6 +116,38 @@ public:
 		return _NUM_OF_ENEMIES;
 	}
 
+	int GetEnemiesLevel() {
+		return _enemies_level;
+	}
+
+	std::string GetFontColorset() {
+		switch (_enemies_level) {
+		case 0://LV:1
+			return CLIOutput::colorset_green;
+		case 1://LV:2
+			return CLIOutput::colorset_yellow;
+		case 2://LV:3
+			return CLIOutput::colorset_red;
+		case 3://LV:4
+			return CLIOutput::colorset_cian;
+		}
+	}
+
+	int GetRefreshInterval() {
+		switch (_enemies_level) {
+		case 0://LV:1
+			return 1000 / 1;
+		case 1://LV:2
+			return 1000 / 2;
+		case 2://LV:3
+			return 1000 / 4;
+		case 3://LV:4
+			return 1000 / 5;
+		}
+
+		throw "E_INVALID_ENEMY_LEVEL";
+	}
+
 	Enemy* GetEnemyFromFieldPosition(int x, int y) {
 
 		int enemy_id = _GetEnemyIdFromFieldPosition(x, y);
@@ -152,6 +192,10 @@ public:
 		_next_dir = next_move_dir;
 	}
 
+	void SetEnemiesLevel(int new_level) {
+		_enemies_level = new_level;
+	}
+
 private:
 	static const int _ENEMIES_ROW = 4;
 	static const int _ENEMIES_COL = 11;
@@ -160,7 +204,7 @@ private:
 	Enemy::MoveDir _next_dir;
 	PoolAllocator<Enemy, _NUM_OF_ENEMIES> _palloc;
 
-	int invasion_level;
+	int _enemies_level;
 	bool is_enemy_on_the_bottom; //インベーダーが下端に到達したフラグ
 
 	void _AllocateEnemies() {

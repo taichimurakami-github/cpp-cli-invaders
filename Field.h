@@ -6,6 +6,8 @@
 #include <time.h>
 #include <string.h>
 
+#include "CLIOutput.h"
+
 //Include base class 
 
 class Field
@@ -36,7 +38,7 @@ public:
 	}
 
 	//_field_stateにしたがってコンソールに出力
-	void Draw() {
+	void Draw(std::string enemy_colorset = CLIOutput::colorset_white) {
 		//コンソールのバッファ削除
 		//memset(_field_state, 0, sizeof _field_state);
 
@@ -48,7 +50,18 @@ public:
 			std::cout << " |"; //左端の壁
 			for (int x = 0; x < _FIELD_WIDTH; x++) {
 				FValue fvalue = _field_state[y][x];
-				std::cout << _TILE[fvalue];
+
+				switch (fvalue) {
+				case FValue::ENEMY: {
+					std::cout << enemy_colorset << _TILE[fvalue] << CLIOutput::colorset_white;
+					break;
+				}
+
+				default: {
+					std::cout << _TILE[fvalue];
+					break;
+				}
+				}
 			}
 			std::cout << "|" << std::endl;//右端の壁と改行
 		}
@@ -71,7 +84,7 @@ public:
 	}
 
 	//SET SPECIFIC FIELD_VALUE
-	void SetFieldState(int x, int y, FValue new_field_value) {
+	void SetFieldState(int x, int y, FValue new_field_value = FValue::NONE) {
 		_field_state[y][x] = new_field_value;
 	}
 

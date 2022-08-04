@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
+#include <string>
 #include "FieldObjBase.h"
-#include "Field.h";
-
+#include "Field.h"
 
 class Enemy : public FieldObjBase
 {
@@ -26,7 +26,11 @@ public:
 
 	void Dead(Field* field) {
 		SetIsDead(true);
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
+	}
+
+	void DrawSelf(Field* field) {
+		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
 
 	void MoveRight(Field* field) {
@@ -36,7 +40,7 @@ public:
 			return;
 		}
 
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
 		SetX(_x + 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
@@ -47,7 +51,7 @@ public:
 			return;
 		}
 
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
 		SetX(_x - 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}
@@ -58,7 +62,7 @@ public:
 			return;
 		}
 
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
 		SetY(_y + 1);
 		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
 	}

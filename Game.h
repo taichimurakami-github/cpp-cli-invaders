@@ -34,14 +34,11 @@ public:
 
 		//タイトル画面表示
 		SetGState(GState::TITLE);
-
-		_enemy_refresh_interval = R_Interval::ENEMY_LV1;
-		_enemy_bullet_refresh_interval = R_Interval::ENEMY_BULLET_LV1;
 	}
 	~Game() {}
 
 
-	static enum GState {
+	enum GState {
 		TITLE,
 		PLAYING,
 		GAMEOVER,
@@ -49,22 +46,18 @@ public:
 		MAX
 	};
 
-	//ゲームのFPS
-	static const int GAME_FPS = 80;
-
 	//リフレッシュ用インターバル一覧
-	static enum R_Interval : int {
-		GAME = 1000 / 60,
+	enum class ENEMY_BULLET_LEVEL {
+		LV1,
+		LV2,
+		LV3,
+	};
 
-		//敵の更新頻度
-		ENEMY_LV1 = 1000 / 1,
-		ENEMY_LV2 = 1000 / 2,
-		ENEMY_LV3 = 1000 / 4,
-		ENEMY_LV4 = 1000 / 5,
-
-		//敵弾の更新頻度
-		ENEMY_BULLET_LV1 = 1000 / 3,
-		ENEMY_BULLET_LV2 = 1000 / 5,
+	enum class ENEMY_LEVEL {
+		LV1,
+		LV2,
+		LV3,
+		LV4,
 	};
 
 	void SetGState(GState s) {
@@ -99,9 +92,7 @@ private:
 	clock_t _lastClockForEnemyBulletInterval;
 	clock_t _lastClock;
 	GState _game_state;
-
-	R_Interval _enemy_refresh_interval;
-	R_Interval _enemy_bullet_refresh_interval;
+	static const int _GAME_FPS = 60;
 
 	Field* C_Field;
 	EnemyController* C_EnemyController;
@@ -115,10 +106,6 @@ private:
 		C_EnemyController->Init(C_Field);
 		C_Player->Init(C_Field);
 		C_EnemyBulletController->Init();
-
-		//各種変数の初期化
-		_enemy_refresh_interval = R_Interval::ENEMY_LV1;
-		_enemy_bullet_refresh_interval = R_Interval::ENEMY_BULLET_LV1;
 	}
 
 	void _ShowTitle() {
@@ -175,8 +162,9 @@ private:
 	}
 
 	void _PlayGame() {
-		int update_interval = 1000 / GAME_FPS;//60fps固定
+		int update_interval = 1000 / _GAME_FPS;//60fps固定
 		int max_hit_count = C_EnemyController->GetNumOfEnemies();
+		const int game_master_interval = 1000 / _GAME_FPS;
 		clock_t nowClock = clock();
 
 
@@ -197,7 +185,7 @@ private:
 			clock_t clockDiffForInvaderInterval = nowClock - _lastClockForEnemyInterval;
 			clock_t clockDiffForInvaderBulletinterval = nowClock - _lastClockForEnemyBulletInterval;
 
-			if (clockDiff >= R_Interval::GAME) {
+			if (clockDiff >= game_master_interval) {
 				_lastClock = nowClock;
 
 				if (_kbhit()) {
@@ -218,6 +206,11 @@ private:
 						}
 						break;
 					}
+					case 'q': {
+						SetGState(GState::TITLE);
+						break;
+					}
+
 					default: {
 						C_Player->Shoot();
 						break;
@@ -228,8 +221,9 @@ private:
 				//プレーヤーの弾を移動させる&当たり判定
 				C_Player->Update(C_Field, C_EnemyController);
 
-				//インベーダー移動処理
-				if (clockDiffForInvaderInterval >= _enemy_refresh_interval) {
+				//インベーダー本体関連の処理
+				if (clockDiffForInvaderInterval >= C_EnemyController->GetRefreshInterval()) {
+					//インベーダー移動処理
 					_lastClockForEnemyInterval = nowClock;
 					C_EnemyController->Update(C_Field);
 					if (C_EnemyController->GetIsEnemyOnTheBottom()) {
@@ -237,9 +231,13 @@ private:
 						SetGState(GState::GAMEOVER);
 					}
 				}
+				//else {
+				//	//インベーダー再描画処理
+				//	C_EnemyController->Redraw(C_Field);
+				//}
 
 				//インベーダーの弾の発射処理
-				if (_lastClockForEnemyBulletInterval >= _enemy_bullet_refresh_interval) {
+				if (_lastClockForEnemyBulletInterval >= C_EnemyBulletController->GetRefreshInterval()) {
 					_lastClockForEnemyBulletInterval = nowClock;
 					C_EnemyBulletController->Update();
 
@@ -251,15 +249,27 @@ private:
 
 				//canvas更新
 				//C_EnemyController->SetEnemiesIntoField(C_Field);
-				C_Field->Draw();
+				C_Field->Draw(C_EnemyController->GetFontColorset());
 
 				//敵を全滅したかどうかの判定
-				if (C_Player->GetHitCount() >= max_hit_count) {
+				int now_hit_count = C_Player->GetHitCount();
+				if (now_hit_count >= max_hit_count) {
 					//ゲームクリア！
 					SetGState(GState::GAMECLEAR);
 				}
 
 				//レベルアップするかどうかの判定
+
+				if (now_hit_count >= max_hit_count * 0.75) {
+					//二段階レベルアップ：全体の敵が元の3割以下に減ったとき
+					C_EnemyController->SetEnemiesLevel((int)ENEMY_LEVEL::LV3);
+					C_EnemyBulletController->SetEnemyBulletLevel((int)ENEMY_BULLET_LEVEL::LV3);
+				}
+				else if (now_hit_count >= max_hit_count * 0.4) {
+					//一段階レベルアップ：全体の敵が元の5割以下に減ったとき
+					C_EnemyController->SetEnemiesLevel((int)ENEMY_LEVEL::LV2);
+					C_EnemyBulletController->SetEnemyBulletLevel((int)ENEMY_BULLET_LEVEL::LV2);
+				}
 			}
 		}
 	}

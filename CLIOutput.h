@@ -114,9 +114,14 @@ public:
 		DrawEndl();
 	}
 
+	static const std::string colorset_white;
+	static const std::string colorset_green;
+	static const std::string colorset_yellow;
+	static const std::string colorset_red;
+	static const std::string colorset_cian;
+
 
 private:
 	int _line_width = 32 * 2;
 	int _line_height = 30;
 };
-

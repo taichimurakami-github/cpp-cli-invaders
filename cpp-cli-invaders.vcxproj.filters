@@ -101,5 +101,8 @@
     <ClInclude Include="CLIOutput.h">
       <Filter>ヘッダー ファイル\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="ヘッダー.h">
+      <Filter>ヘッダー ファイル\States</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -49,7 +49,7 @@ public:
 			return true;
 		}
 
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
 		SetX(_x + 1);
 		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
 
@@ -68,7 +68,7 @@ public:
 			return true;
 		}
 
-		field->SetFieldState(_x, _y, Field::FValue::NONE);
+		field->SetFieldState(_x, _y);
 		SetX(_x - 1);
 		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
 

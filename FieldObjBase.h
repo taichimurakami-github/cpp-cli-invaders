@@ -1,10 +1,6 @@
 #pragma once
 #include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <conio.h>
-#include <time.h>
-#include <string.h>
+#include <string>
 
 class FieldObjBase
 {
@@ -34,5 +30,6 @@ public:
 protected:
 	int _x;
 	int _y;
+	std::string _tile;
 };
 
