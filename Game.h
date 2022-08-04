@@ -206,6 +206,12 @@ private:
 						}
 						break;
 					}
+
+					case ' ': {
+						C_Player->ChangeAttribute(C_Field);
+						break;
+					}
+
 					case 'q': {
 						SetGState(GState::TITLE);
 						break;

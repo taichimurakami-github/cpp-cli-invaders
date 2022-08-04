@@ -19,6 +19,7 @@ public:
 		PLAYER,
 		PLAYER_BULLET,
 		ENEMY_BULLET,
+
 		PLAYER_P,
 		PLAYER_M,
 		ENEMY_P,
@@ -109,8 +110,8 @@ private:
 		 "Åõ",//FValue::ENEMY_BULLET
 
 		 //í«â¡
-		 "Åü",//FValue::PLAYER_P
-		 "Åû",//FValue::PLAYER_M
+		 "Å£",//FValue::PLAYER_P
+		 "Å¢",//FValue::PLAYER_M
 		 "Åö",//FValue::ENEMY_P
 		 "Åô",//FValue::ENEMY_M
 		 "Åü",//FValue::PLAYER_BULLET_P

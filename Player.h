@@ -23,8 +23,9 @@ public:
 	}
 
 	void Init(Field* field) {
-		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
 		_hit_count = 0;
+		_attribute = Attribute::TYPE_M;
+		field->SetFieldState(_x, _y, _GetPlayerFValue());
 	}
 
 	//playerbulletのアップデート
@@ -50,6 +51,7 @@ public:
 		}
 
 		//敵弾にあたりに行ったとき
+		//TODO：実装
 		if (field->GetFieldValue(_x + 1, _y) == Field::FValue::ENEMY_BULLET) {
 			//ゲームオーバー
 			return true;
@@ -57,7 +59,7 @@ public:
 
 		field->SetFieldState(_x, _y);
 		SetX(_x + 1);
-		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
+		field->SetFieldState(_x, _y, _GetPlayerFValue());
 
 		return false;
 	}
@@ -69,6 +71,7 @@ public:
 			return false;
 		}
 
+		//TODO：実装
 		if (field->GetFieldValue(_x - 1, _y) == Field::FValue::ENEMY_BULLET) {
 			//ゲームオーバー
 			return true;
@@ -76,7 +79,7 @@ public:
 
 		field->SetFieldState(_x, _y);
 		SetX(_x - 1);
-		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
+		field->SetFieldState(_x, _y, _GetPlayerFValue());
 
 		return false;
 	}
@@ -86,8 +89,17 @@ public:
 		if (C_PlayerBullet->GetIsFired()) {
 			return;
 		}
+
+		//自機の属性と同じ属性を発射されるPlayerBulletに適用
+		PlayerBullet::Attribute pb_attribute = (_attribute == Attribute::TYPE_M) ? PlayerBullet::Attribute::TYPE_M : PlayerBullet::Attribute::TYPE_P;
+
 		//Fire!!
-		C_PlayerBullet->Init(_x, _y - 1);
+		C_PlayerBullet->Fire(_x, _y - 1, pb_attribute);
+	}
+
+	void ChangeAttribute(Field* field) {
+		_attribute = (_attribute == Attribute::TYPE_M) ? Attribute::TYPE_P : Attribute::TYPE_M;
+		field->SetFieldState(_x, _y, _GetPlayerFValue());
 	}
 
 	int GetHitCount() {
@@ -108,5 +120,10 @@ private:
 	int _init_y;
 	int _hit_count;
 	Attribute _attribute;
+
+	Field::FValue _GetPlayerFValue() {
+		return (_attribute == Attribute::TYPE_M) ? Field::FValue::PLAYER_M : Field::FValue::PLAYER_P;
+	}
+
 };
 

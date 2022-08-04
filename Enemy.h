@@ -27,7 +27,7 @@ public:
 	};
 
 	void Init(Field* field) {
-		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+		field->SetFieldState(_x, _y, _GetFValue());
 	}
 
 	void Dead(Field* field) {
@@ -36,7 +36,7 @@ public:
 	}
 
 	void DrawSelf(Field* field) {
-		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+		field->SetFieldState(_x, _y, _GetFValue());
 	}
 
 	void MoveRight(Field* field) {
@@ -48,7 +48,7 @@ public:
 
 		field->SetFieldState(_x, _y);
 		SetX(_x + 1);
-		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+		field->SetFieldState(_x, _y, _GetFValue());
 	}
 
 	void MoveLeft(Field* field) {
@@ -59,7 +59,7 @@ public:
 
 		field->SetFieldState(_x, _y);
 		SetX(_x - 1);
-		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+		field->SetFieldState(_x, _y, _GetFValue());
 	}
 
 	void MoveDown(Field* field) {
@@ -70,7 +70,7 @@ public:
 
 		field->SetFieldState(_x, _y);
 		SetY(_y + 1);
-		field->SetFieldState(_x, _y, Field::FValue::ENEMY);
+		field->SetFieldState(_x, _y, _GetFValue());
 	}
 
 	bool IsMovable(MoveDir next_dir, int field_width, int field_height) {
@@ -91,6 +91,7 @@ public:
 		}
 
 	}
+
 	bool GetIsDead() {
 		return _is_dead;
 	}
@@ -110,5 +111,9 @@ public:
 private:
 	bool _is_dead;
 	Attribute _attribute;
+
+	Field::FValue _GetFValue() {
+		return (_attribute == Attribute::TYPE_M) ? Field::FValue::ENEMY_M : Field::FValue::ENEMY_P;
+	}
 };
 

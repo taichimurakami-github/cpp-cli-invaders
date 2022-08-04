@@ -8,15 +8,22 @@
 class PlayerBullet : public FieldObjBase
 {
 public:
+	static enum Attribute {//Ž©’e‚Ì‘®«
+		TYPE_P,
+		TYPE_M
+	};
+
 	PlayerBullet(int x, int y) :FieldObjBase(x, y) {
 		_is_fired = false;
 		_is_hit = false;
+		_attribute = Attribute::TYPE_M;
 	}
 
 	//Fire!!!!
-	void Init(int x_shoot_from, int y_shoot_from) {
+	void Fire(int x_shoot_from, int y_shoot_from, Attribute attr) {
 		_x = x_shoot_from;
 		_y = y_shoot_from;
+		_attribute = attr;
 		_is_fired = true;
 	}
 
@@ -44,7 +51,7 @@ public:
 		}
 
 		//ã’[‚É“ž’B‚µ‚Ä‚¢‚È‚¢ê‡F’e‚ðã‚ÉˆÚ“®
-		field->SetFieldState(_x, --_y, Field::FValue::PLAYER_BULLET);
+		field->SetFieldState(_x, --_y, _GetFValue());
 		return false;
 	}
 
@@ -56,8 +63,21 @@ public:
 		return _is_hit;
 	}
 
+	Attribute GetAttribute() {
+		return _attribute;
+	}
+
+	Attribute SetAttribute(Attribute attr) {
+		_attribute = attr;
+	}
+
 private:
 	bool _is_fired;
 	bool _is_hit;
+	Attribute _attribute;
+
+	Field::FValue _GetFValue() {
+		return (_attribute == Attribute::TYPE_M) ? Field::FValue::PLAYER_BULLET_M : Field::FValue::PLAYER_BULLET_P;
+	}
 };
 
