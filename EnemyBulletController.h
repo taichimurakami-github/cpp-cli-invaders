@@ -3,7 +3,7 @@
 #include "Enemy.h"
 #include "EnemyBullet.h"
 #include "EnemyController.h"
-
+#include "PoolAllocator.h"
 
 class EnemyBulletController
 {
@@ -13,9 +13,8 @@ public:
 		C_Field = field;
 		_is_hit = false;
 
-
 		for (int x = 0; x < 11; x++) {
-			_enemy_bullets_state[x] = new EnemyBullet(x);
+			_enemy_bullets_state[x] = new(_palloc.Alloc()) EnemyBullet(x);
 		}
 	}
 
@@ -68,7 +67,9 @@ public:
 	}
 
 private:
-	EnemyBullet* _enemy_bullets_state[11];
+	static const int _ENEMY_BULLETS_COL = 11;
+	EnemyBullet* _enemy_bullets_state[_ENEMY_BULLETS_COL];
+	PoolAllocator<EnemyBullet, _ENEMY_BULLETS_COL> _palloc;
 	EnemyController* C_EnemyController;
 	Field* C_Field;
 	bool _is_hit;

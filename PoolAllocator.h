@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 
 // class T‚ğÅ‘åMAXSIZEŒÂŠm•Û‰Â”\‚ÈPoolAllocator‚ğÀ‘•‚µ‚Ä‚­‚¾‚³‚¢
 template <class T, size_t MAXSIZE>
@@ -63,8 +63,10 @@ private:
 	union elem_type {
 		T value;
 		elem_type* next_avail_buff;
+		elem_type() {}
+		~elem_type() {}
 	};
 
 	elem_type buffer[MAXSIZE];
 	elem_type* now_free_buff;
-}
+};

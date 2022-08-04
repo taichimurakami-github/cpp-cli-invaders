@@ -9,7 +9,7 @@
 //- 規定数のインベーダーを生成
 //- すべてのインベーダーたちに対して指令を送る
 
-//#include "PoolAllocator.h"
+#include "PoolAllocator.h"
 #include "Enemy.h"
 #include "Field.h"
 
@@ -18,10 +18,11 @@ class EnemyController
 public:
 	EnemyController() {
 		//TODO: PoolAllocatorを使った生成に変更
+
 		for (int row = 0; row < _ENEMIES_ROW; row++) {
 			for (int col = 0; col < _ENEMIES_COL; col++) {
-				int ptr = col + _ENEMIES_COL * row;
-				_enemies_state[ptr] = new Enemy(col * 2, row * 2);
+				int id = col + _ENEMIES_COL * row;
+				_enemies_state[id] = new(_palloc.Alloc()) Enemy(2 * col, 2 * row);
 			}
 		}
 
@@ -159,6 +160,7 @@ private:
 	static const int _NUM_OF_ENEMIES = _ENEMIES_ROW * _ENEMIES_COL;
 	Enemy* _enemies_state[_NUM_OF_ENEMIES];
 	Enemy::MoveDir _next_dir;
+	PoolAllocator<Enemy, _NUM_OF_ENEMIES> _palloc;
 
 	bool isEnemyOnTheBottom; //インベーダーが下端に到達したフラグ
 
