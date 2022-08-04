@@ -36,28 +36,43 @@ public:
 	}
 
 
-	void MoveRight(Field* field) {
+	bool MoveRight(Field* field) {
 
 		//右端に居るので何もしない
 		if (_x == field->GetFieldWidth() - 1) {
-			return;
+			return false;
+		}
+
+		//敵弾にあたりに行ったとき
+		if (field->GetFieldValue(_x + 1, _y) == Field::FValue::ENEMY_BULLET) {
+			//ゲームオーバー
+			return true;
 		}
 
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x + 1);
 		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
+
+		return false;
 	}
 
-	void MoveLeft(Field* field) {
+	bool MoveLeft(Field* field) {
 
 		//左端に居るので何もしない
 		if (_x == 0) {
-			return;
+			return false;
+		}
+
+		if (field->GetFieldValue(_x - 1, _y) == Field::FValue::ENEMY_BULLET) {
+			//ゲームオーバー
+			return true;
 		}
 
 		field->SetFieldState(_x, _y, Field::FValue::NONE);
 		SetX(_x - 1);
 		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
+
+		return false;
 	}
 
 	void Shoot() {

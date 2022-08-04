@@ -45,11 +45,12 @@ public:
 		system("cls");
 
 		for (int y = 0; y < _FIELD_HEIGHT; y++) {
+			std::cout << " |"; //左端の壁
 			for (int x = 0; x < _FIELD_WIDTH; x++) {
 				FValue fvalue = _field_state[y][x];
 				std::cout << _TILE[fvalue];
 			}
-			std::cout << std::endl;
+			std::cout << "|" << std::endl;//右端の壁と改行
 		}
 
 	}

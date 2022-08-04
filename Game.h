@@ -50,7 +50,7 @@ public:
 	};
 
 	//ゲームのFPS
-	static const int GAME_FPS = 60;
+	static const int GAME_FPS = 80;
 
 	//リフレッシュ用インターバル一覧
 	static enum R_Interval : int {
@@ -159,7 +159,7 @@ private:
 		system("cls");
 		C_CLIOutput->DrawGameClear();
 
-		while (_game_state == GState::GAMEOVER) {
+		while (_game_state == GState::GAMECLEAR) {
 			//キー入力待ち
 			switch (_getch()) {
 			case 'q': {
@@ -202,14 +202,20 @@ private:
 
 				if (_kbhit()) {
 
-
+					//プレーヤーの機体操作
 					switch (_getch()) {
 					case 'a': {
-						C_Player->MoveLeft(C_Field);
+						if (C_Player->MoveLeft(C_Field)) {
+							//移動先に敵弾があったら被弾
+							SetGState(GState::GAMEOVER);
+						}
 						break;
 					}
 					case 'd': {
-						C_Player->MoveRight(C_Field);
+						if (C_Player->MoveRight(C_Field)) {
+							//移動先に敵弾があったら被弾
+							SetGState(GState::GAMEOVER);
+						}
 						break;
 					}
 					default: {
