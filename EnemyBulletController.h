@@ -11,11 +11,19 @@ public:
 	EnemyBulletController(Field* field, EnemyController* enemy_controller) {
 		C_EnemyController = enemy_controller;
 		C_Field = field;
+
+		//‰Šú‰»Ï‚İ‚È‚Ì‚Åƒƒ‚ƒŠ‚ğŠm•Û
+		_AllocateEnemyBullets();
+	}
+
+	void Init() {
 		_is_hit = false;
 
-		for (int x = 0; x < 11; x++) {
-			_enemy_bullets_state[x] = new(_palloc.Alloc()) EnemyBullet(x);
-		}
+		//ƒƒ‚ƒŠŠJ•úˆ—
+		_FreeEnemyBullets();
+
+		//ƒƒ‚ƒŠŠm•Û
+		_AllocateEnemyBullets();
 	}
 
 	void Update() {
@@ -73,5 +81,17 @@ private:
 	EnemyController* C_EnemyController;
 	Field* C_Field;
 	bool _is_hit;
+
+	void _AllocateEnemyBullets() {
+		for (int x = 0; x < _ENEMY_BULLETS_COL; x++) {
+			_enemy_bullets_state[x] = new(_palloc.Alloc()) EnemyBullet(x);
+		}
+	}
+
+	void _FreeEnemyBullets() {
+		for (int x = 0; x < _ENEMY_BULLETS_COL; x++) {
+			_palloc.Free(_enemy_bullets_state[x]);
+		}
+	}
 };
 

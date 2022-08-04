@@ -10,11 +10,5 @@ int main() {
 
 	Game* game = new Game();
 
-	game->SetGState(Game::GState::PLAYING);
-	game->PlayGame();
-
-	//Init();
-	//int a = _getch(screen_canvas);
-
 	return 0;
 }

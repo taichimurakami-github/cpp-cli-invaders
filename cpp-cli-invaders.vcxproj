@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CLIOutput.cpp" />
     <ClCompile Include="cpp-cli-invaders.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CLIOutput.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />

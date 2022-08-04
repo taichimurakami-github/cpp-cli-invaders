@@ -57,6 +57,9 @@
     <ClCompile Include="PlayerBullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="CLIOutput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Draw.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="PlayerBullet.h">
       <Filter>ヘッダー ファイル\States</Filter>
+    </ClInclude>
+    <ClInclude Include="CLIOutput.h">
+      <Filter>ヘッダー ファイル\Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

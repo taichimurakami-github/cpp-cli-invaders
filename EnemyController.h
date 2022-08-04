@@ -19,23 +19,18 @@ public:
 	EnemyController() {
 		//TODO: PoolAllocatorを使った生成に変更
 
-		for (int row = 0; row < _ENEMIES_ROW; row++) {
-			for (int col = 0; col < _ENEMIES_COL; col++) {
-				int id = col + _ENEMIES_COL * row;
-				_enemies_state[id] = new(_palloc.Alloc()) Enemy(2 * col, 2 * row);
-			}
-		}
-
-		std::cout << "enemy用メモリ割り当て完了" << std::endl;
+		_AllocateEnemies();
 
 		_next_dir = Enemy::MoveDir::RIGHT;
-		isEnemyOnTheBottom = false;
+		is_enemy_on_the_bottom = false;
 	}
 
 	void Init(Field* field) {
-		for (int i = 0; i < _NUM_OF_ENEMIES; i++) {
-			_enemies_state[i]->Init(field);
-		}
+		//_enemies_stateをリセット
+
+		_FreeEnemies();
+
+		_AllocateEnemies();
 	}
 
 	//生きているインベーダーを全員動かす
@@ -66,7 +61,7 @@ public:
 
 				//インベーダーが底辺にたどり着いたらゲームオーバー
 				if (enemy->GetY() == field_height - 1) {
-					isEnemyOnTheBottom = true;
+					is_enemy_on_the_bottom = true;
 					return;
 				}
 
@@ -98,7 +93,7 @@ public:
 	}
 
 	bool GetIsEnemyOnTheBottom() {
-		return isEnemyOnTheBottom;
+		return is_enemy_on_the_bottom;
 	}
 
 	int GetEnemiesRow() {
@@ -165,7 +160,26 @@ private:
 	Enemy::MoveDir _next_dir;
 	PoolAllocator<Enemy, _NUM_OF_ENEMIES> _palloc;
 
-	bool isEnemyOnTheBottom; //インベーダーが下端に到達したフラグ
+	int invasion_level;
+	bool is_enemy_on_the_bottom; //インベーダーが下端に到達したフラグ
+
+	void _AllocateEnemies() {
+		for (int row = 0; row < _ENEMIES_ROW; row++) {
+			for (int col = 0; col < _ENEMIES_COL; col++) {
+				int id = col + _ENEMIES_COL * row;
+				_enemies_state[id] = new(_palloc.Alloc()) Enemy(2 * col, 2 * row);
+			}
+		}
+	}
+
+	void _FreeEnemies() {
+		for (int row = 0; row < _ENEMIES_ROW; row++) {
+			for (int col = 0; col < _ENEMIES_COL; col++) {
+				int id = col + _ENEMIES_COL * row;
+				_palloc.Free(_enemies_state[id]);
+			}
+		}
+	}
 
 	int _GetEnemyIdFromFieldPosition(int x, int y) {
 		//計算の基準にする左上のインベーダー

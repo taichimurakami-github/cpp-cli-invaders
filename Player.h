@@ -10,11 +10,15 @@ class Player : public FieldObjBase
 public:
 	Player(int x, int y) : FieldObjBase(x, y) {
 		C_PlayerBullet = new PlayerBullet(x, y);
+
+		_init_x = x;
+		_init_y = y;
 		_hit_count = 0;
 	}
 
 	void Init(Field* field) {
 		field->SetFieldState(_x, _y, Field::FValue::PLAYER);
+		_hit_count = 0;
 	}
 
 	//playerbulletのアップデート
@@ -71,6 +75,8 @@ public:
 
 private:
 	PlayerBullet* C_PlayerBullet;
+	int _init_x;
+	int _init_y;
 	int _hit_count;
 };
 

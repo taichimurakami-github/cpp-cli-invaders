@@ -21,18 +21,15 @@ public:
 	};
 
 	Field() {
-		int countY = 0;;
-		int countX = 0;
 		//_field_state‚Ì‰Šú‰»
-		for (int y = 0; y < _FIELD_HEIGHT; y++) {
-			for (int x = 0; x < _FIELD_WIDTH; x++) {
-				_field_state[y][x] = FValue::NONE;
-				countX++;
-			}
-		}
+		_ResetFieldState();
 
 	}
 	~Field() {}
+
+	void Init() {
+		_ResetFieldState();
+	}
 
 	void FillTile(int x, int y, FValue val) {
 		_field_state[y][x] = val;
@@ -56,18 +53,6 @@ public:
 		}
 
 	}
-
-	//initialize _field_state
-	//** call before update fieldstate proc **
-	//g‚í‚È‚¢‚Ì‚ÅÁ‚·‚©‚à
-	void ResetFieldState() {
-		for (int y = 0; y < _FIELD_HEIGHT; y++) {
-			for (int x = 0; x < _FIELD_WIDTH; x++) {
-				_field_state[y][x] = FValue::NONE;
-			}
-		}
-	}
-
 
 	//GET FIELD_WIDTH
 	int GetFieldWidth() {
@@ -101,5 +86,13 @@ private:
 		 "ª",//FValue::PLAYER_BULLET
 		 "›",//FValue::ENEMY_BULLET
 	};
+
+	void _ResetFieldState() {
+		for (int y = 0; y < _FIELD_HEIGHT; y++) {
+			for (int x = 0; x < _FIELD_WIDTH; x++) {
+				_field_state[y][x] = FValue::NONE;
+			}
+		}
+	}
 };
 
